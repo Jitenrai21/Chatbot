@@ -21,18 +21,25 @@ st.header('ChatterMate using Gemini LLM')
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
 
+# if 'temp_input' not in st.session_state:
+#     st.session_state['temp_input'] = ''
+
 input = st.text_input('You: ', key='input')
 submit = st.button('Ask')
 
-if submit or st.session_state['input']:
-    response = get_gemini_response(st.session_state['input'])
-    st.session_state['chat_history'].append(('You', st.session_state['input']))
-    st.subheader('The Response is')
+if submit or input:
+    response = get_gemini_response(input)
+    st.session_state['chat_history'].append(('You', input))
+    st.subheader('Response:')
+    full_response = ""
     for chunk in response:
         st.write(chunk.text)
-        st.session_state['chat_history'].append(('Bot', chunk.text))
+        full_response += chunk.text
+    st.session_state['chat_history'].append(('Bot', full_response))
+    
+    # st.session_state['temp_input'] = ''
 
-st.subheader('The Chat History is')
+st.subheader('Chat History:')
 
 for role, text in st.session_state['chat_history']:
     st.write(f"{role}:{text}")
